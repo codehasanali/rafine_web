@@ -70,7 +70,7 @@ const AssignFreeProduct = () => {
       });
       message.success('Ücretsiz ürün başarıyla atandı');
       form.resetFields();
-      
+
       // Refresh free products list
       const updatedFreeProducts = await freeProductAPI.getAllFreeProducts();
       setFreeProducts(updatedFreeProducts);
