@@ -7,7 +7,7 @@ const { Header: AntHeader } = Layout;
 const { Text } = Typography;
 
 const Header: React.FC = () => {
-  const navigate = useNavigate();
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');

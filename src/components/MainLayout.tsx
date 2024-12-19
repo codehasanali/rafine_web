@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Drawer, Space, Avatar, Dropdown } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Layout, Menu, Button, Drawer, } from 'antd';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
     HomeOutlined,
     ShoppingCartOutlined,
@@ -16,7 +16,7 @@ import {
 
 const { Content } = Layout;
 
-const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const MainLayout: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
@@ -34,7 +34,8 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('isAdmin');
-        navigate('/login');
+        localStorage.removeItem('user');
+        navigate('/login', { replace: true });
     };
 
     const menuItems = [
@@ -175,7 +176,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     padding: isMobile ? '16px' : '24px',
                     minHeight: 280
                 }}>
-                    {children}
+                    <Outlet />
                 </Content>
             </Layout>
         </Layout>
