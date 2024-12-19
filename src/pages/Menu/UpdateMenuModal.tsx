@@ -44,7 +44,7 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
   const [addOnOptions, setAddOnOptions] = useState<MenuOption[]>([]);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
+  const [categories, setCategories] = useState<{ id: number, name: string }[]>([]);
   const [newCategory, setNewCategory] = useState<string>('');
 
   useEffect(() => {
@@ -64,30 +64,30 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
 
   const formatImageUrl = (imageUrl: string) => {
     if (!imageUrl) return '';
-    
+
     if (imageUrl.startsWith('http')) {
       return imageUrl;
     }
-    
+
     if (imageUrl.startsWith('/uploads/menu/')) {
-      return `http://localhost:3000${imageUrl}`;
+      return `http://77.90.53.5:3000${imageUrl}`;
     }
-    
+
     if (imageUrl.startsWith('/uploads/')) {
-      return `http://localhost:3000/uploads/menu${imageUrl.substring(8)}`;
+      return `http://77.90.53.5:3000/uploads/menu${imageUrl.substring(8)}`;
     }
-    
-    return `http://localhost:3000/uploads/menu/${imageUrl}`;
+
+    return `http://77.90.53.5:3000/uploads/menu/${imageUrl}`;
   };
-  
+
   useEffect(() => {
     const fetchMenuItem = async () => {
       try {
         const menuItem = await menuAPI.getMenuItemById(menuItemId);
-        
+
         const formattedImageUrl = formatImageUrl(menuItem.image);
         setImageUrl(formattedImageUrl);
-        
+
         form.setFieldsValue({
           name: menuItem.name,
           price: menuItem.price,
@@ -123,7 +123,7 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
     setLoading(true);
     try {
       const formData = new FormData();
-      
+
       formData.append('name', values.name);
       formData.append('price', values.price.toString());
       formData.append('points', values.points.toString());
@@ -131,13 +131,13 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
       if (values.description) {
         formData.append('description', values.description);
       }
-      
+
       if (imageFile) {
         formData.append('image', imageFile);
       } else if (imageUrl) {
         formData.append('imageUrl', imageUrl);
       }
-      
+
       const options = selectedAddOns.map(name => {
         const option = addOnOptions.find(opt => opt.name === name);
         return {
@@ -148,7 +148,7 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
           isRequired: false
         };
       });
-      
+
       formData.append('options', JSON.stringify(options));
 
       await menuAPI.updateMenuItem(menuItemId, formData);
@@ -235,7 +235,7 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
                     onClick={async () => {
                       if (newCategory && !categories.find(cat => cat.name === newCategory)) {
                         await menuAPI.createCategory(newCategory);
-                        const newCat = {id: categories.length + 1, name: newCategory};
+                        const newCat = { id: categories.length + 1, name: newCategory };
                         setCategories([...categories, newCat]);
                         form.setFieldsValue({ category: newCat.name });
                         setNewCategory('');
@@ -276,7 +276,7 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
 
         {imageUrl && (
           <Form.Item label="Mevcut Görsel">
-            <Image 
+            <Image
               src={imageUrl}
               alt="Ürün görseli"
               style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}

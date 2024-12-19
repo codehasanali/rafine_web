@@ -7,8 +7,8 @@ import 'dayjs/locale/tr';
 import OrderDetailModal from './OrderDetailModal';
 import type { ColumnType } from 'antd/es/table';
 
-const SOCKET_URL = 'http://localhost:3000';
-const NOTIFICATION_SOUND_URL = 'http://localhost:3000/correct3-95630.mp3 ';
+const SOCKET_URL = 'http://77.90.53.5:3000';
+const NOTIFICATION_SOUND_URL = 'http://77.90.53.5:3000/correct3-95630.mp3';
 dayjs.locale('tr');
 
 type OrderStatus = 'PENDING' | 'PREPARING' | 'READY' | 'COMPLETED' | 'CANCELLED';
@@ -78,10 +78,10 @@ const OrdersPage: React.FC = () => {
       try {
         // Play notification sound
         playNotificationSound();
-        
+
         // Fetch the complete order details when receiving a new order
         const orderDetails = await orderAPI.getOrderById(order.id);
-        
+
         const formattedOrder: Order = {
           id: orderDetails.id,
           orderNumber: orderDetails.orderNumber || orderDetails.id.slice(-6),
@@ -108,7 +108,7 @@ const OrdersPage: React.FC = () => {
           userId: orderDetails.userId,
           updatedAt: orderDetails.updatedAt
         };
-        
+
         setOrders(prevOrders => [formattedOrder, ...prevOrders]);
         message.success(`Yeni sipariş alındı: #${formattedOrder.orderNumber}`);
       } catch (error) {
@@ -122,7 +122,7 @@ const OrdersPage: React.FC = () => {
       try {
         // Fetch the complete order details when receiving an update
         const orderDetails = await orderAPI.getOrderById(updatedOrder.id);
-        
+
         const formattedOrder: Order = {
           id: orderDetails.id,
           orderNumber: orderDetails.orderNumber || orderDetails.id.slice(-6),
@@ -150,8 +150,8 @@ const OrdersPage: React.FC = () => {
           updatedAt: orderDetails.updatedAt
         };
 
-        setOrders(prevOrders => 
-          prevOrders.map(order => 
+        setOrders(prevOrders =>
+          prevOrders.map(order =>
             order.id === formattedOrder.id ? formattedOrder : order
           )
         );
@@ -284,7 +284,7 @@ const OrdersPage: React.FC = () => {
       render: (_: unknown, record: Order) => (
         <div>
           {record.status === 'PENDING' && (
-            <Button 
+            <Button
               type="primary"
               onClick={() => handleStatusChange(record.id, 'PREPARING')}
             >
@@ -292,7 +292,7 @@ const OrdersPage: React.FC = () => {
             </Button>
           )}
           {record.status === 'PREPARING' && (
-            <Button 
+            <Button
               type="primary"
               onClick={() => handleStatusChange(record.id, 'READY')}
             >
@@ -300,7 +300,7 @@ const OrdersPage: React.FC = () => {
             </Button>
           )}
           {record.status === 'READY' && (
-            <Button 
+            <Button
               type="primary"
               onClick={() => handleStatusChange(record.id, 'COMPLETED')}
             >
@@ -316,7 +316,7 @@ const OrdersPage: React.FC = () => {
     try {
       const audio = new Audio(NOTIFICATION_SOUND_URL);
       audio.volume = 1.0;
-      
+
       // Add event listeners to handle loading and errors
       audio.addEventListener('canplaythrough', () => {
         audio.play().catch(error => {
@@ -347,7 +347,7 @@ const OrdersPage: React.FC = () => {
       />
       <OrderDetailModal
         visible={modalVisible}
-        order={selectedOrder  as never}
+        order={selectedOrder as never}
         onClose={() => setModalVisible(false)}
         onStatusChange={(orderId: string, newStatus: OrderStatus) => handleStatusChange(orderId, newStatus)}
       />
