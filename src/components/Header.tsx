@@ -1,32 +1,12 @@
 import React from 'react';
-import { Layout, Space, Typography, Avatar, Dropdown } from 'antd';
-import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Layout, Space, Typography, Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
 
 const Header: React.FC = () => {
-
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('isAdmin');
-    localStorage.removeItem('user');
-
-    window.location.href = '/login';
-  };
-
-  const dropdownItems = {
-    items: [
-      {
-        key: 'logout',
-        icon: <LogoutOutlined />,
-        label: 'Çıkış Yap',
-        onClick: handleLogout,
-      },
-    ],
-  };
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   return (
     <AntHeader style={{ background: '#fff', padding: '0 24px', boxShadow: '0 1px 4px rgba(0,21,41,.08)' }}>
@@ -37,12 +17,10 @@ const Header: React.FC = () => {
           </Text>
         </div>
         <Space>
-          <Dropdown menu={dropdownItems} placement="bottomRight">
-            <Space style={{ cursor: 'pointer' }}>
-              <Avatar icon={<UserOutlined />} />
-              <Text>Admin</Text>
-            </Space>
-          </Dropdown>
+          <Space style={{ cursor: 'pointer' }}>
+            <Avatar icon={<UserOutlined />} />
+            <Text>{user.name || 'Admin'}</Text>
+          </Space>
         </Space>
       </div>
     </AntHeader>

@@ -1,20 +1,16 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
-interface PrivateRouteProps {
-  children: React.ReactNode;
-  requireAdmin?: boolean;
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, requireAdmin = true }) => {
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
   const token = localStorage.getItem('token');
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
-  
+
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (requireAdmin && !isAdmin) {
+  if (!isAdmin) {
     return <Navigate to="/unauthorized" replace />;
   }
 

@@ -1,26 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { adminLogin } from '../services/api';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+    if (token && isAdmin) {
+      navigate(from, { replace: true });
+    }
+  }, [navigate, from]);
 
   const onFinish = async (values: { email: string; password: string }) => {
     try {
-      await adminLogin(values.email, values.password);
-      navigate('/dashboard', { replace: true });
+      const response = await adminLogin(values.email, values.password);
+      if (response && response.token) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('isAdmin', 'true');
+        localStorage.setItem('user', JSON.stringify(response.user));
+        navigate(from, { replace: true });
+      }
     } catch (error: any) {
       message.error(error.message || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
     }
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       minHeight: '100vh',
       backgroundColor: '#f0f2f5'
     }}>
@@ -28,7 +45,7 @@ const Login: React.FC = () => {
         name="login"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        style={{ 
+        style={{
           maxWidth: 300,
           padding: 24,
           borderRadius: 8,
@@ -37,7 +54,7 @@ const Login: React.FC = () => {
         }}
       >
         <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Admin Girişi</h2>
-        
+
         <Form.Item
           name="email"
           rules={[
@@ -45,9 +62,9 @@ const Login: React.FC = () => {
             { type: 'email', message: 'Geçerli bir email adresi girin!' }
           ]}
         >
-          <Input 
-            prefix={<UserOutlined />} 
-            placeholder="Email" 
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="Email"
           />
         </Form.Item>
 

@@ -38,16 +38,11 @@ api.interceptors.response.use(
 export const adminLogin = async (email: string, password: string) => {
   try {
     const response = await api.post('/auth/login', { email, password });
-    const { token, user } = response.data.data;
+    const { user } = response.data.data;
 
     if (!user.isAdmin) {
       throw new Error('Yönetici yetkisine sahip değilsiniz');
     }
-
-    // Set all user data in localStorage
-    localStorage.setItem('token', token);
-    localStorage.setItem('isAdmin', 'true');
-    localStorage.setItem('user', JSON.stringify(user));
 
     return response.data.data;
   } catch (error: any) {
@@ -181,6 +176,10 @@ export const menuAPI = {
 
 
 };
+
+
+
+
 
 
 // Promotion types
