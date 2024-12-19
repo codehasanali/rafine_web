@@ -26,6 +26,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem('token');
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -94,7 +96,7 @@ export const menuAPI = {
       return response.data;
     } catch (error: any) {
       console.error('Create menu item error:', error);
-      throw new Error(error.response?.data?.error || 'Menü ö��esi oluşturulamadı');
+      throw new Error(error.response?.data?.error || 'Menü öğesi oluşturulamadı');
     }
   },
 

@@ -11,7 +11,10 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem('isAdmin');
+    localStorage.removeItem('user');
+
+    window.location.href = '/login';
   };
 
   const dropdownItems = {

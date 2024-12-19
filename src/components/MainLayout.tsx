@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Drawer } from 'antd';
+import { Layout, Menu, Button, Drawer, Space, Avatar, Dropdown } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
     HomeOutlined,
@@ -10,7 +10,8 @@ import {
     QrcodeOutlined,
     TagOutlined,
     FileTextOutlined,
-    MenuOutlined
+    MenuOutlined,
+    LogoutOutlined
 } from '@ant-design/icons';
 
 const { Content } = Layout;
@@ -29,6 +30,12 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAdmin');
+        navigate('/login');
+    };
 
     const menuItems = [
         {
@@ -71,11 +78,21 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             icon: <FileTextOutlined />,
             label: 'Blog',
         },
+        {
+            key: 'logout',
+            icon: <LogoutOutlined />,
+            label: 'Çıkış Yap',
+            onClick: handleLogout,
+        },
     ];
 
     const handleMenuClick = (key: string) => {
-        navigate(key);
-        setMobileDrawerVisible(false);
+        if (key === 'logout') {
+            handleLogout();
+        } else {
+            navigate(key);
+            setMobileDrawerVisible(false);
+        }
     };
 
     return (
