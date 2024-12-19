@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Space, Button, message, Popconfirm, Select, Tag, Modal, List } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 import { menuAPI, commentAPI } from '../../services/api';
 
 import UpdateMenuModal from './UpdateMenuModal';
@@ -50,11 +49,9 @@ const MenuItemPage: React.FC = () => {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
-  const [comments, setComments] = useState<Record<number, Comment[]>>({});
   const [isCommentsModalVisible, setIsCommentsModalVisible] = useState(false);
   const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
   const [isDeleteCategoryModalVisible, setIsDeleteCategoryModalVisible] = useState(false);
-  const navigate = useNavigate();
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -81,10 +78,6 @@ const MenuItemPage: React.FC = () => {
   const fetchComments = useCallback(async (menuItemId: number) => {
     try {
       const itemComments = await commentAPI.getMenuItemComments(menuItemId);
-      setComments(prevComments => ({
-        ...prevComments,
-        [menuItemId]: itemComments,
-      }));
       setSelectedComments(itemComments);
       setIsCommentsModalVisible(true);
     } catch (error) {

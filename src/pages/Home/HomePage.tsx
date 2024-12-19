@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Statistic, DatePicker, Button, Space } from 'antd';
+import { useEffect, useState } from 'react';
+import { Row, Col, Card, Statistic, DatePicker, Space } from 'antd';
 import { ShoppingCartOutlined, DollarOutlined, UserOutlined, RiseOutlined } from '@ant-design/icons';
 import { orderAPI, userAPI } from '../../services/api';
 import dayjs from 'dayjs';
@@ -87,7 +87,7 @@ export default function HomePage() {
                             <h4>Karşılaştırılacak Dönem:</h4>
                             <RangePicker
                                 value={[dateRange[0], dateRange[1]]}
-                                onChange={(dates) => dates && setDateRange(dates)}
+                                onChange={(dates) => dates && setDateRange(dates as any[])}
                                 picker="month"
                             />
                         </Col>
@@ -95,7 +95,7 @@ export default function HomePage() {
                             <h4>Karşılaştırma Dönemi:</h4>
                             <RangePicker
                                 value={[comparisonRange[0], comparisonRange[1]]}
-                                onChange={(dates) => dates && setComparisonRange(dates)}
+                                onChange={(dates) => dates && setComparisonRange(dates as any[])}
                                 picker="month"
                             />
                         </Col>

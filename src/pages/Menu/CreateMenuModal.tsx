@@ -6,23 +6,6 @@ import { menuAPI } from '../../services/api';
 const { TextArea } = Input;
 const { Option } = Select;
 
-interface MenuOption {
-  name: string;
-  price: number;
-  category: string;
-  isDefault: boolean;
-  isRequired: boolean;
-}
-
-interface MenuItem {
-  name: string;
-  price: number;
-  points: number;
-  description?: string;
-  category: string;
-  image?: string;
-  options: MenuOption[];
-}
 
 interface CreateMenuModalProps {
   visible: boolean;
@@ -47,7 +30,7 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
         message.error('Kategoriler yüklenirken hata oluştu');
       }
     };
-    
+
     if (visible) {
       fetchCategories();
     }
@@ -57,7 +40,7 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
     {
       name: "Extra Shot",
       price: 20.00,
-      category: "Add-ons", 
+      category: "Add-ons",
       isDefault: false,
       isRequired: false
     },
@@ -87,7 +70,7 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
 
   const handleAddCategory = async () => {
     if (!newCategory) return;
-    
+
     try {
       // Convert to uppercase before saving
       const uppercaseCategory = newCategory.toUpperCase();
@@ -104,14 +87,14 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
     try {
       setLoading(true);
       const formData = new FormData();
-      
+
       // Ana menü öğesi bilgileri
       formData.append('name', values.name);
       formData.append('price', values.price.toString());
       formData.append('points', values.points.toString());
       formData.append('category', values.category.toUpperCase()); // Convert category to uppercase
       if (values.description) formData.append('description', values.description);
-      
+
       // Seçilen ekstraları options dizisine dönüştür
       const options = selectedAddOns.map(addonName => {
         const addon = addOnOptions.find(opt => opt.name === addonName) || packetOption;
@@ -123,7 +106,7 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
           isRequired: false
         };
       });
-      
+
       formData.append('options', JSON.stringify(options));
 
       if (imageFile) {

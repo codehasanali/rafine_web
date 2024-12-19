@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { toast } from 'react-toastify';
 
 const api = axios.create({
   baseURL: 'http://77.90.53.5:3000',
@@ -181,42 +180,6 @@ export const menuAPI = {
 
 };
 
-
-interface OrderOption {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-}
-
-interface OrderItem {
-  id: string;
-  menuItemId: number;
-  quantity: number;
-  basePrice: number;
-  finalPrice: number;
-  notes?: string;
-  menuItem: any;
-  options: OrderOption[];
-}
-
-interface Order {
-  id: string;
-  userId: string;
-  type: string;
-  status: string;
-  totalAmount: number;
-  finalAmount: number;
-  notes?: string;
-  earnedPoints: number;
-  createdAt: string;
-  updatedAt: string;
-  items: OrderItem[];
-  user: {
-    name: string;
-    email: string;
-  };
-}
 
 // Promotion types
 interface Promotion {

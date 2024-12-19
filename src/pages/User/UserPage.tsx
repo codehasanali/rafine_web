@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Table, 
-  Card, 
-  Row, 
+import {
+  Table,
+  Card,
+  Row,
   Col,
   Tag,
-  Space,
   message,
   Typography,
   Layout,
@@ -107,7 +106,7 @@ const UserPage: React.FC = () => {
       render: (date) => new Date(date).toLocaleDateString('tr-TR'),
       responsive: ['lg'],
     },
-  
+
   ];
 
   if (loading) {
@@ -126,7 +125,7 @@ const UserPage: React.FC = () => {
             <Title level={screens.md ? 2 : 3} style={{ marginBottom: screens.md ? '24px' : '16px' }}>
               Kullanıcılar
             </Title>
-            
+
             <Table
               columns={columns}
               dataSource={users}

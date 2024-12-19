@@ -45,7 +45,7 @@ const UserSelectModal: React.FC<UserSelectModalProps> = ({ visible, onClose, onS
     {
       title: 'İşlem',
       key: 'action',
-      render: (text: string, record: any) => (
+      render: (_: string, record: any) => (
         <a onClick={() => onSelect(record)}>Seç</a>
       ),
     },

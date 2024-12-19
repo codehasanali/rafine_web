@@ -14,16 +14,7 @@ interface MenuOption {
   isRequired: boolean;
 }
 
-interface MenuItem {
-  id: number;
-  name: string;
-  price: number;
-  points: number;
-  description: string;
-  category: string;
-  image: string;
-  options: MenuOption[];
-}
+
 
 interface UpdateMenuModalProps {
   visible: boolean;
