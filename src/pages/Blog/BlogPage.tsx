@@ -19,10 +19,10 @@ const BlogPage: React.FC = () => {
         try {
             setLoading(true);
             const data = await blogAPI.getPosts();
-            // Transform image URLs to include localhost:3000
+            // Transform image URLs to include full server URL
             const transformedData = data.map((post: any) => ({
                 ...post,
-                image: post.image ? `http://localhost:3000${post.image}` : post.image
+                image: post.image ? `http://77.90.53.5:3000${post.image}` : post.image
             }));
             setPosts(transformedData);
         } catch (error: any) {

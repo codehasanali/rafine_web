@@ -41,7 +41,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             formData.append('title', values.title);
             formData.append('content', values.content);
             formData.append('categoryId', values.categoryId);
-            formData.append('published', values.published.toString());
+            formData.append('published', values.published);
 
             if (imageFile) {
                 formData.append('image', imageFile);
@@ -71,7 +71,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
-                initialValues={{ published: false }}
+                initialValues={{ published: true }}
             >
                 <Form.Item
                     name="title"
