@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://77.90.53.5:3000',
+  baseURL: 'https://api.rafinecoffeeshop.com.tr',
   headers: {
     'Content-Type': 'application/json',
   },

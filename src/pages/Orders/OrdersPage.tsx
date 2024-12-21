@@ -7,8 +7,8 @@ import 'dayjs/locale/tr';
 import OrderDetailModal from './OrderDetailModal';
 import type { ColumnType } from 'antd/es/table';
 
-const SOCKET_URL = 'http://77.90.53.5:3000';
-const NOTIFICATION_SOUND_URL = 'http://77.90.53.5:3000/correct3-95630.mp3';
+const SOCKET_URL = 'https://api.rafinecoffeeshop.com.tr';
+const NOTIFICATION_SOUND_URL = 'https://api.rafinecoffeeshop.com.tr/correct3-95630.mp3';
 dayjs.locale('tr');
 
 type OrderStatus = 'PENDING' | 'PREPARING' | 'READY' | 'COMPLETED' | 'CANCELLED';
