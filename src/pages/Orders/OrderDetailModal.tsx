@@ -223,7 +223,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   useEffect(() => {
     if (!order) return;
 
-    const socket = io('http://localhost:3000', {
+    const socket = io('wss://api.rafinecoffeeshop.com.tr', {
       transports: ['websocket']
     });
 
@@ -309,7 +309,8 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
     const nextStatus = getNextStatus(order.status);
     try {
-      await orderAPI.updateOrderStatus(order.id, nextStatus);
+      const updatedOrder = await orderAPI.updateOrderStatus(order.id, nextStatus);
+      setOrder(updatedOrder);
       onStatusChange(order.id, nextStatus);
 
       if (nextStatus === 'COMPLETED' && order.earnedPoints > 0) {
@@ -317,6 +318,19 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
       }
     } catch (error) {
       message.error('Sipariş durumu güncellenirken bir hata oluştu');
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    if (!order) return;
+
+    try {
+      const updatedOrder = await orderAPI.updateOrderStatus(order.id, 'CANCELLED');
+      setOrder(updatedOrder);
+      onStatusChange(order.id, 'CANCELLED');
+      message.success('Sipariş başarıyla iptal edildi');
+    } catch (error) {
+      message.error('Sipariş iptal edilirken bir hata oluştu');
     }
   };
 
@@ -360,14 +374,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                 key="cancel"
                 type="primary"
                 danger
-                onClick={async () => {
-                  try {
-                    await orderAPI.updateOrderStatus(order.id, 'CANCELLED');
-                    await onStatusChange(order.id, 'CANCELLED');
-                  } catch (error) {
-                    message.error('Sipariş iptal edilirken bir hata oluştu');
-                  }
-                }}
+                onClick={handleCancelOrder}
               >
                 İptal Et
               </Button>
