@@ -7,7 +7,9 @@ import 'dayjs/locale/tr';
 import OrderDetailModal from './OrderDetailModal';
 import type { ColumnType } from 'antd/es/table';
 
-const SOCKET_URL = 'https://api.rafinecoffeeshop.com.tr';
+const SOCKET_URL = process.env.NODE_ENV === 'development'
+  ? 'wss://api.rafinecoffeeshop.com.tr'
+  : 'wss://api.rafinecoffeeshop.com.tr';
 const NOTIFICATION_SOUND_URL = 'https://api.rafinecoffeeshop.com.tr/correct3-95630.mp3';
 dayjs.locale('tr');
 
