@@ -6,6 +6,7 @@ import PrivateRoute from './components/PrivateRoute';
 import LoginPage from './components/Login';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import MainLayout from './components/MainLayout';
+import PasswordProtection from './components/PasswordProtection';
 
 import HomePage from './pages/Home/HomePage';
 import OrdersPage from './pages/Orders/OrdersPage';
@@ -36,12 +37,14 @@ const App: React.FC = () => {
           >
             <Route index element={<HomePage />} />
             <Route path="orders" element={<OrdersPage />} />
-            <Route path="menu" element={<MenuItemPage />} />
-            <Route path="users" element={<UserPage />} />
             <Route path="qr" element={<QrPage />} />
-            <Route path="promotion" element={<PromotionPage />} />
             <Route path="blog" element={<BlogPage />} />
-            <Route path="free-product" element={<AssignFreeProduct />} />
+
+            {/* Password Protected Routes */}
+            <Route path="menu" element={<PasswordProtection><MenuItemPage /></PasswordProtection>} />
+            <Route path="users" element={<PasswordProtection><UserPage /></PasswordProtection>} />
+            <Route path="promotion" element={<PasswordProtection><PromotionPage /></PasswordProtection>} />
+            <Route path="free-product" element={<PasswordProtection><AssignFreeProduct /></PasswordProtection>} />
           </Route>
 
           {/* Catch all undefined routes */}
