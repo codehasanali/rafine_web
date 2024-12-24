@@ -52,6 +52,7 @@ const MenuItemPage: React.FC = () => {
   const [isCommentsModalVisible, setIsCommentsModalVisible] = useState(false);
   const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
   const [isDeleteCategoryModalVisible, setIsDeleteCategoryModalVisible] = useState(false);
+  const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -101,15 +102,20 @@ const MenuItemPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
+      setDeletingItemId(id);
+      const hide = message.loading('Menü öğesi siliniyor...', 0);
+
       await menuAPI.deleteMenuItem(id);
+      hide();
       message.success('Menü öğesi başarıyla silindi');
-      fetchMenuItems();
+
+      setMenuItems(prevItems => prevItems.filter(item => item.id !== id));
+      setFilteredMenuItems(prevItems => prevItems.filter(item => item.id !== id));
     } catch (error: any) {
-      if (error.response?.status === 400) {
-        message.error(error.response.data.error);
-      } else {
-        message.error('Menü öğesi silinirken bir hata oluştu');
-      }
+      console.error('Delete error:', error);
+      message.error(error.message || 'Menü öğesi silinirken bir hata oluştu');
+    } finally {
+      setDeletingItemId(null);
     }
   };
 

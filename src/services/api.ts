@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api.rafinecoffeeshop.com.tr',
+  baseURL: 'http://localhost:3000',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -136,10 +136,20 @@ export const menuAPI = {
 
   deleteMenuItem: async (id: number) => {
     try {
-      await api.delete(`/menu/${id}`);
+      const response = await api.delete(`/menu/${id}`);
+      if (response.status === 204) {
+        return true;
+      }
+      return response.data;
     } catch (error: any) {
       console.error('Delete menu item error:', error);
-      throw new Error(error.response?.data?.error || 'Menü öğesi silinemedi');
+      if (error.response?.status === 409) {
+        throw new Error('Bu menü öğesi aktif siparişlerde kullanıldığı için silinemiyor');
+      }
+      if (error.response?.status === 404) {
+        throw new Error('Menü öğesi bulunamadı');
+      }
+      throw new Error(error.response?.data?.error || 'Menü öğesi silinirken bir hata oluştu');
     }
   },
 

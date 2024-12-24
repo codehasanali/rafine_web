@@ -61,14 +61,14 @@ const UpdateMenuModal: React.FC<UpdateMenuModalProps> = ({
     }
 
     if (imageUrl.startsWith('/uploads/menu/')) {
-      return `https://api.rafinecoffeeshop.com.tr{imageUrl}`;
+      return `http://localhost:3000${imageUrl}`;
     }
 
     if (imageUrl.startsWith('/uploads/')) {
-      return `https://api.rafinecoffeeshop.com.tr/uploads/menu${imageUrl.substring(8)}`;
+      return `http://localhost:3000/uploads/menu${imageUrl.substring(8)}`;
     }
 
-    return `https://api.rafinecoffeeshop.com.tr/uploads/menu/${imageUrl}`;
+    return `http://localhost:3000/uploads/menu/${imageUrl}`;
   };
 
   useEffect(() => {
