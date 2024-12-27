@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { freeProductAPI, userAPI, menuAPI } from '../../services/api';
+import { freeProductAPI, userAPI, menuAPI, categoryAPI } from '../../services/api';
 import { DatePicker, Select, Button, Form, message, Table, Popconfirm } from 'antd';
 import dayjs from 'dayjs';
 
@@ -15,6 +15,7 @@ interface MenuItem {
   price: number;
   points: number;
   description: string;
+  category: string;
 }
 
 interface FreeProduct {
@@ -27,6 +28,7 @@ interface FreeProduct {
   menuItem: {
     name: string;
     price: number;
+    category: string;
   };
   user: {
     name: string;
@@ -34,23 +36,32 @@ interface FreeProduct {
   };
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 const AssignFreeProduct = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [freeProducts, setFreeProducts] = useState<FreeProduct[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [form] = Form.useForm();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [usersData, menuItemsData, freeProductsData] = await Promise.all([
+        const [usersData, menuItemsData, freeProductsData, categoriesData] = await Promise.all([
           userAPI.getAllUsers(),
           menuAPI.getMenuItems(),
-          freeProductAPI.getAllFreeProducts()
+          freeProductAPI.getAllFreeProducts(),
+          menuAPI.getCategories()
         ]);
         setUsers(usersData);
         setMenuItems(menuItemsData);
         setFreeProducts(freeProductsData);
+        setCategories(categoriesData);
       } catch (error) {
         message.error('Veriler yüklenirken hata oluştu');
       }
@@ -101,7 +112,10 @@ const AssignFreeProduct = () => {
     {
       title: 'Ürün',
       dataIndex: ['menuItem', 'name'],
-      key: 'menuItemName'
+      key: 'menuItemName',
+      render: (_: string, record: FreeProduct) => (
+        <span>{record.menuItem.name} - {record.menuItem.category}</span>
+      )
     },
     {
       title: 'Başlangıç Tarihi',
@@ -141,6 +155,10 @@ const AssignFreeProduct = () => {
     }
   ];
 
+  const filteredMenuItems = selectedCategory
+    ? menuItems.filter(item => item.category === selectedCategory)
+    : menuItems;
+
   return (
     <div>
       <Form form={form} onFinish={handleSubmit} layout="vertical" style={{ maxWidth: 600, marginBottom: 24 }}>
@@ -164,6 +182,21 @@ const AssignFreeProduct = () => {
         </Form.Item>
 
         <Form.Item
+          name="category"
+          label="Kategori"
+        >
+          <Select
+            allowClear
+            placeholder="Kategori seçin"
+            onChange={setSelectedCategory}
+            options={categories.map(category => ({
+              value: category.name,
+              label: category.name
+            }))}
+          />
+        </Form.Item>
+
+        <Form.Item
           name="menuItemId"
           label="Ürün"
           rules={[{ required: true, message: 'Lütfen ürün seçin' }]}
@@ -175,9 +208,9 @@ const AssignFreeProduct = () => {
             filterOption={(input, option) =>
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
-            options={menuItems.map(item => ({
+            options={filteredMenuItems.map(item => ({
               value: item.id,
-              label: `${item.name} (${item.price}₺)`
+              label: `${item.name} (${item.price}₺) - ${item.category}`
             }))}
           />
         </Form.Item>

@@ -6,7 +6,6 @@ import { menuAPI } from '../../services/api';
 const { TextArea } = Input;
 const { Option } = Select;
 
-
 interface CreateMenuModalProps {
   visible: boolean;
   onCancel: () => void;
@@ -20,6 +19,13 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
   const [newCategory, setNewCategory] = useState<string>('');
   const [categories, setCategories] = useState<any[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [addonPrices, setAddonPrices] = useState<{ [key: string]: number }>({});
+  const [defaultPrices, setDefaultPrices] = useState<{ [key: string]: number }>({
+    "Extra Shot": 20.00,
+    "Extra Aroma": 15.00,
+    "Krema": 10.00,
+    "Paket": 15.00
+  });
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -39,21 +45,21 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
   const addOnOptions = [
     {
       name: "Extra Shot",
-      price: 20.00,
+      defaultPrice: 20.00,
       category: "Add-ons",
       isDefault: false,
       isRequired: false
     },
     {
       name: "Extra Aroma",
-      price: 15.00,
+      defaultPrice: 15.00,
       category: "Add-ons",
       isDefault: false,
       isRequired: false
     },
     {
       name: "Krema",
-      price: 10.00,
+      defaultPrice: 10.00,
       category: "Add-ons",
       isDefault: false,
       isRequired: false
@@ -62,7 +68,7 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
 
   const packetOption = {
     name: "Paket",
-    price: 15.00,
+    defaultPrice: 15.00,
     category: "Packet",
     isDefault: false,
     isRequired: false
@@ -72,7 +78,6 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
     if (!newCategory) return;
 
     try {
-      // Convert to uppercase before saving
       const uppercaseCategory = newCategory.toUpperCase();
       const createdCategory = await menuAPI.createCategory(uppercaseCategory);
       setCategories(prev => [...prev, createdCategory]);
@@ -83,24 +88,38 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
     }
   };
 
+  const handleUpdateDefaultPrice = (addonName: string) => {
+    const currentPrice = addonPrices[addonName];
+    setDefaultPrices(prev => ({
+      ...prev,
+      [addonName]: currentPrice
+    }));
+    message.success(`${addonName} için varsayılan fiyat güncellendi`);
+  };
+
+  const handleAddonPriceChange = (addonName: string, newPrice: number) => {
+    setAddonPrices(prev => ({
+      ...prev,
+      [addonName]: newPrice
+    }));
+  };
+
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
       const formData = new FormData();
 
-      // Ana menü öğesi bilgileri
       formData.append('name', values.name);
       formData.append('price', values.price.toString());
       formData.append('points', values.points.toString());
-      formData.append('category', values.category.toUpperCase()); // Convert category to uppercase
+      formData.append('category', values.category.toUpperCase());
       if (values.description) formData.append('description', values.description);
 
-      // Seçilen ekstraları options dizisine dönüştür
       const options = selectedAddOns.map(addonName => {
         const addon = addOnOptions.find(opt => opt.name === addonName) || packetOption;
         return {
           name: addon.name,
-          price: addon.price,
+          price: addonPrices[addon.name] || defaultPrices[addon.name],
           category: 'ADDON',
           isDefault: false,
           isRequired: false
@@ -237,20 +256,43 @@ const CreateMenuModal: React.FC<CreateMenuModalProps> = ({ visible, onCancel, on
         </Form.Item>
 
         <Form.Item label="Ekstralar">
-          <Checkbox.Group
-            options={[
-              ...addOnOptions.map(opt => ({
-                label: `${opt.name} (+₺${opt.price.toFixed(2)})`,
-                value: opt.name
-              })),
-              {
-                label: `${packetOption.name} (+₺${packetOption.price.toFixed(2)})`,
-                value: packetOption.name
-              }
-            ]}
-            value={selectedAddOns}
-            onChange={(values) => setSelectedAddOns(values as string[])}
-          />
+          <div style={{ marginBottom: 16 }}>
+            <Checkbox.Group
+              options={[
+                ...addOnOptions.map(opt => ({
+                  label: `${opt.name} (Varsayılan: ₺${defaultPrices[opt.name].toFixed(2)})`,
+                  value: opt.name
+                })),
+                {
+                  label: `${packetOption.name} (Varsayılan: ₺${defaultPrices[packetOption.name].toFixed(2)})`,
+                  value: packetOption.name
+                }
+              ]}
+              value={selectedAddOns}
+              onChange={(values) => setSelectedAddOns(values as string[])}
+            />
+          </div>
+
+          {selectedAddOns.map(addon => (
+            <div key={addon} style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>{addon} Güncel Fiyat:</span>
+              <InputNumber
+                min={0}
+                precision={2}
+                value={addonPrices[addon] || defaultPrices[addon]}
+                onChange={(value) => handleAddonPriceChange(addon, value || 0)}
+                formatter={value => `₺ ${value}`}
+                style={{ width: '150px' }}
+              />
+              <Button
+                type="primary"
+                onClick={() => handleUpdateDefaultPrice(addon)}
+                size="small"
+              >
+                Varsayılan Olarak Ayarla
+              </Button>
+            </div>
+          ))}
         </Form.Item>
 
         <Form.Item>
